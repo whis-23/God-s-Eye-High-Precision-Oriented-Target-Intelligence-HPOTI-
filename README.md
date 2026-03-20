@@ -45,7 +45,7 @@ graph LR
 ## 📂 Project Structure
 
 ```text
-r:\Remote-sensing\Sar-Eye\
+r:\Remote-sensing\God's Eye High-Precision Oriented Target Intelligence (HPOTI)\
 ├── config\
 │   └── hyperparams.yaml          # Model & Training configuration
 ├── src\
@@ -55,7 +55,7 @@ r:\Remote-sensing\Sar-Eye\
 │   ├── inference\
 │   │   └── sahi_inference.py    # Tiled inference engine (SAHI)
 │   ├── models\
-│   │   └── sar_net.py           # YOLOv12-OBB + PANet wrapper
+│   │   └── gods_eye.py           # YOLOv12-OBB + PANet wrapper
 │   ├── preprocessing\
 │   │   └── filters.py           # Log-Transformation & Lee Filter
 │   ├── training\

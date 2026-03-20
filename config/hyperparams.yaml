@@ -1,5 +1,5 @@
 # hyperparams.yaml
-# Training configuration for SAR-Net
+# Training configuration for God's Eye
 
 # Model Hyperparameters
 backbone: "YOLOv12-m"

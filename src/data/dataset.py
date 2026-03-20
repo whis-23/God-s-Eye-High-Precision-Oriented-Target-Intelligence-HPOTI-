@@ -1,28 +1,21 @@
 import os
 import random
-import shutil
+import yaml
 from pathlib import Path
 
 def split_dataset(root_path: str, ratio: tuple = (0.2, 0.2, 0.6), seed: int = 42) -> dict:
     """
-    Partition SARDet-100K images into train/val/test splits.
-    
-    Args:
-        root_path: Path to dataset images/labels.
-        ratio: (train_ratio, val_ratio, test_ratio).
-        seed: Random seed for reproducibility.
-        
-    Returns:
-        dict: Summary of the split.
+    Partition SARDet-100K images into train/val/test splits and generate YOLO config.
     """
     random.seed(seed)
-    # Simplified logic assuming images are in 'images/' folder
-    img_dir = Path(root_path) / "images"
+    root = Path(root_path)
+    img_dir = root / "images"
+    
     if not img_dir.exists():
         return {"error": f"Image directory {img_dir} not found."}
         
     # Get all image paths
-    all_images = list(img_dir.glob("*.jpg")) + list(img_dir.glob("*.png"))
+    all_images = sorted(list(img_dir.glob("*.jpg")) + list(img_dir.glob("*.png")))
     random.shuffle(all_images)
     
     total = len(all_images)
@@ -35,26 +28,36 @@ def split_dataset(root_path: str, ratio: tuple = (0.2, 0.2, 0.6), seed: int = 42
         "test": all_images[val_end:]
     }
     
-    # Class mapping from task.tex
-    class_map = {
-        0: "Aircraft",
-        1: "Ship",
-        2: "Car",
-        3: "Tank",
-        4: "Bridge",
-        5: "Harbor"
+    # Create split files (text files containing image paths)
+    for name, images in splits.items():
+        split_file = root / f"{name}.txt"
+        with open(split_file, "w") as f:
+            for img in images:
+                f.write(f"{img.absolute()}\n")
+    
+    # Class mapping for HPOTI
+    class_map = {0: "Aircraft", 1: "Ship", 2: "Car", 3: "Tank", 4: "Bridge", 5: "Harbor"}
+    
+    # Generate data.yaml for Ultralytics/YOLO
+    data_config = {
+        "path": str(root.absolute()),
+        "train": "train.txt",
+        "val": "val.txt",
+        "test": "test.txt",
+        "names": class_map
     }
     
-    # In a real implementation, we would move files to 'train/', 'val/', 'test/' subdirectories
-    # or generate YAML files for Ultralytics YOLO.
-    
+    with open(root / "data.yaml", "w") as f:
+        yaml.dump(data_config, f)
+        
     return {
         "train_count": len(splits["train"]),
         "val_count": len(splits["val"]),
         "test_count": len(splits["test"]),
-        "class_mapping": class_map
+        "config_file": str(root / "data.yaml")
     }
 
 if __name__ == "__main__":
-    # Smoke test on a mock path
-    print("Dataset splitter logic ready for SARDet-100K.")
+    # Example usage
+    # result = split_dataset("./data/SARDet100K")
+    print("Dataset splitter logic completed with YOLO YAML generation.")
