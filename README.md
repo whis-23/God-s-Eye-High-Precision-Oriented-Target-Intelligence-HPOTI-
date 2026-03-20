@@ -17,30 +17,6 @@
 
 ![System Architecture](./architecture.png)
 
-### Core Logic Flow
-```mermaid
-graph LR
-    subgraph Input ["1. DATA INPUT"]
-        A[SARDet-100K Images]
-    end
-
-    subgraph Preprocessing ["2. PREPROCESSING"]
-        B[Log-dB Scaling] --> C[Lee Adaptive Filter]
-    end
-
-    subgraph Core ["3. CORE ARCHITECTURE"]
-        D[YOLOv12 Backbone] --> E[PANet Neck]
-        E --> F[YOLO-OBB Head]
-    end
-
-    subgraph Inference ["4. INTELLIGENCE OUTPUT"]
-        G[SAHI Tiled Inference] --> H[Grad-CAM & Metrics]
-    end
-
-    A --> B
-    C --> D
-    F --> G
-```
 
 ## 📂 Project Structure
 
